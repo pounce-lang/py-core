@@ -1,5 +1,26 @@
-import time
+# import time
 # the pounce language runtime
+
+def deepcopy(l):
+    newlist = []
+    for e in l:
+        if isArray(e):
+            newlist.append(deepcopy(e))
+        else:
+            newlist.append(e)
+    return newlist
+
+# def deepcopy_aux(l):
+#     foreach e in l:
+#         if type(e) == 'list'
+#             return  
+
+def pounceReplace(id, val):
+    def r (ele):
+        if ele == id:
+            return val
+        return ele
+    return r
 
 def _compose(s, pl):
     global words
@@ -9,17 +30,22 @@ def _compose(s, pl):
     words[new_word] = new_definition
     return [s, pl]
 def _pounce(s, pl):
-    global words
-    # [param1 param2] [phrase] [new-word] define
-    new_word = s.pop()
-    definition = s.pop()
+    # [param1 param2] [phrase]
+    phrase = deepcopy(s.pop())
     params = s.pop()
-    # replace 
-    words[new_word] = new_definition
+    while len(params) > 0 :
+        thisid = params.pop()
+        thisval = s.pop()
+        rep = pounceReplace(thisid, thisval)
+        phrase = list(map(rep, phrase))
+    pl = phrase+pl
     return [s, pl]
 def _dup(s, pl):
     a = s[-1]
-    s.append(a)
+    if isArray(a):
+        s.append(deepcopy(a))
+    else:
+        s.append(a)
     return [s, pl]
 def _add(s, pl):
     a = s.pop()
@@ -39,7 +65,12 @@ def _mult(s, pl):
 def _divide(s, pl):
     a = s.pop()
     b = s.pop()
-    s.append(int(a / b))
+    s.append(int(b / a))
+    return [s, pl]
+def _modulo(s, pl):
+    a = s.pop()
+    b = s.pop()
+    s.append(int(b % a))
     return [s, pl]
 def _n_prod(s, pl):
     if len(s) >= 2:
@@ -137,6 +168,7 @@ words = {
   '-': _sub,
   '*': _mult,
   '/': _divide,
+  '%': _modulo,
   'n*': _n_prod,
   '==': _eq,
   '<': _lt,
@@ -174,17 +206,16 @@ def isfunction(candidate):
 
 #def runScript(program_script, vs):
 #    pl = jp.parse(program_script)
-#    return run(pl, vs)
+#    return purr(pl, words)
 
-def run(pl, debug = False, test_value_stack = []):
-    global words
+def purr(pl, words=words, debug = False, stack = []):
     vs = []
     while pl != None and len(pl) > 0:
-        next = pl[0];
+        next = pl[0]
         pl = pl[1:]
-        if debug:
-            print('about to', vs, next)
-            time.sleep(0.3)
+        # if debug:
+        #     print('about to', vs, next)
+        #     time.sleep(0.3)
         
         if isValue(next, words) or isArray(next) or isRecord(next):
             if next == 'true':
@@ -194,9 +225,9 @@ def run(pl, debug = False, test_value_stack = []):
             else:
                 vs.append(next)
         elif next in words.keys():
-            if debug:
-                print('applying', vs, next, pl)
-                time.sleep(0.3)
+            # if debug:
+            #     print('applying', vs, next, pl)
+            #     time.sleep(0.3)
             
             if isfunction(words[next]):
                 (vs, pl) = words[next](vs, pl)
