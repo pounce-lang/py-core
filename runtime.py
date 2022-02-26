@@ -34,20 +34,20 @@ def _pounce(s, pl):
     phrase = deepcopy(s.pop())
     params = s.pop().copy()
     while len(params) > 0 :
-        thisid = params.pop()
-        thisval = s.pop()
-        rep = pounceReplace(thisid, thisval)
+        id = params.pop()
+        val = s.pop()
+        rep = pounceReplace(id, val)
         phrase = list(map(rep, phrase))
     pl = phrase+pl
     return [s, pl]
-def _bat(s, pl):
+def _crouch(s, pl):
     # [param1 param2] [phrase]
     phrase = deepcopy(s.pop())
     params = s.pop().copy()
     while len(params) > 0 :
-        thisid = params.pop()
-        thisval = s.pop()
-        rep = pounceReplace(thisid, thisval)
+        id = params.pop()
+        val = s.pop()
+        rep = pounceReplace(id, val)
         phrase = list(map(rep, phrase))
     s.append(phrase)
     return [s, pl]
