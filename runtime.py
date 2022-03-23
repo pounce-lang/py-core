@@ -10,10 +10,15 @@ def deepcopy(l):
             newlist.append(e)
     return newlist
 
-# def deepcopy_aux(l):
-#     foreach e in l:
-#         if type(e) == 'list'
-#             return  
+def numBool(boolVal) :
+    if boolVal:
+        return 1
+    return 0
+
+# def evalNumBool(numVal):
+#     if numVal == 0 :
+#         return False
+#     return True
 
 def pounceReplace(id, val):
     def r (ele):
@@ -34,9 +39,9 @@ def _pounce(s, pl):
     phrase = deepcopy(s.pop())
     params = s.pop().copy()
     while len(params) > 0 :
-        id = params.pop()
+        name = params.pop()
         val = s.pop()
-        rep = pounceReplace(id, val)
+        rep = pounceReplace(name, val)
         phrase = list(map(rep, phrase))
     pl = phrase+pl
     return [s, pl]
@@ -76,12 +81,12 @@ def _mult(s, pl):
 def _divide(s, pl):
     a = s.pop()
     b = s.pop()
-    s.append(int(b / a))
+    s.append(b / a)
     return [s, pl]
 def _modulo(s, pl):
     a = s.pop()
     b = s.pop()
-    s.append(int(b % a))
+    s.append(b % a)
     return [s, pl]
 def _n_prod(s, pl):
     if len(s) >= 2:
@@ -98,17 +103,17 @@ def _n_prod(s, pl):
 def _eq(s, pl):
     a = s.pop()
     b = s.pop()
-    s.append(a == b)
+    s.append(numBool(a == b))
     return [s, pl]
 def _gt(s, pl):
     a = s.pop()
     b = s.pop()
-    s.append(b > a)
+    s.append(numBool(b > a))
     return [s, pl]
 def _lt(s, pl):
     a = s.pop()
     b = s.pop()
-    s.append(b < a)
+    s.append(numBool(b < a))
     return [s, pl]
 def _ift(s, pl):
     then_block = s.pop()
@@ -146,14 +151,9 @@ def _set(s, l): # (dict value key -- dict)
     dictionary = s[-1]
     dictionary[key] = value
     return [s, l]
-def _apply(s, l): # (dict key fun -- dict)
-    fun = s.pop()
-    key = s[-1]
-    #l.insert(0, ['get', fun, key, 'set'])
-    l.insert(0, 'set')
-    l.insert(0, key)
-    l = fun+l                                     # concat arrays so that the program list (l) has words on it, not a list
-    l.insert(0, 'get')
+def _apply(s, l):
+    phrase = s.pop()
+    l = phrase+l # concat arrays so that the program list (l) has words on it, not as a list
     return [s, l]
 def _swap(s, l):
     a = s.pop()
@@ -174,6 +174,7 @@ def _dip(s, l):
 words = {
   'compose': _compose,
   'pounce': _pounce,
+  'crouch': _crouch,
   'dup': _dup,
   '+': _add,
   '-': _sub,
@@ -185,10 +186,10 @@ words = {
   '<': _lt,
   '>': _gt,
   'if': _ift,
-  'if-else': _ifte,
+  'ifte': _ifte,
   'get': _get,
   'set': _set,
-  'app': _apply,
+  'leap': _apply,
   'swap': _swap,
   'drop': _drop,
   'dip': _dip
@@ -214,11 +215,7 @@ def isRecord(a):
 def isfunction(candidate):
     return not (isinstance(candidate, str) or isinstance(candidate, (list,)))
 
-
-#def runScript(program_script, vs):
-#    pl = jp.parse(program_script)
-#    return purr(pl, words)
-
+# purr is the interpreter 
 def purr(pl, words=words, debug = False, stack = []):
     vs = []
     while pl != None and len(pl) > 0:
