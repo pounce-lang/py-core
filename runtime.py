@@ -151,7 +151,7 @@ def _set(s, l): # (dict value key -- dict)
     dictionary = s[-1]
     dictionary[key] = value
     return [s, l]
-def _apply(s, l):
+def _leap(s, l):
     phrase = s.pop()
     l = phrase+l # concat arrays so that the program list (l) has words on it, not as a list
     return [s, l]
@@ -189,7 +189,7 @@ words = {
   'ifte': _ifte,
   'get': _get,
   'set': _set,
-  'leap': _apply,
+  'leap': _leap,
   'swap': _swap,
   'drop': _drop,
   'dip': _dip
