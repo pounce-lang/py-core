@@ -1,4 +1,4 @@
-import parser as parse
+import pounce_parser as parse
 import type_dictionary
 import runtime
 

@@ -1,4 +1,4 @@
-from parser import parse
+from pounce_parser import parse
 
 tests = [
     ['hello world', ['hello', 'world']],
